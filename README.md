@@ -4,27 +4,40 @@ A sweet Clojure API for [Copycat][copycat].
 
 ## Usage
 
-Create a client connection to a set of Copycat servers by specifying the server ID, host and port:
+```clojure
+(require '[figaro.core :as figaro])
+```
+
+Create a Copycat server specifying the log, local node id, port and a set of remote nodes:
 
 ```clojure
-(figaro.core/connect
-  [[1 node1 5555]
-   [2 node2 5555]
-   [3 node3 5555]])
+(figaro/server 
+  (figaro/mem-log) 1 5555 
+  [{:id 2 :host node2 :port 5555}
+   {:id 3 :host node3 :port 5555}])
+```
+
+Create a Copycat client connection to a set of servers by specifying a set of node information:
+
+```clojure
+(figaro/client
+  [{:id 1 :host node1 :port 5555}
+   {:id 2 :host node2 :port 5555}
+   {:id 3 :host node3 :port 5555}])
 ```
 
 Create a distributed atom on a path:
 
 ```clojure
-(figaro.core/atom client "register")
+(figaro/dist-atom client "register")
 ```
 
 Operate on the atom:
 
 ```clojure
-(figaro.core/get! atom)
-(figaro.core/set! atom "value")
-(figaro.core/cas! atom "expected" "updated")
+(figaro/get! atom)
+(figaro/set! atom "value")
+(figaro/cas! atom "expected" "updated")
 ```
 
 ## License

@@ -2,6 +2,10 @@
   (:require [clojure.test :refer :all]
             [figaro.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
+(deftest test-client-and-server
+  (testing "Creation of a client and server."
+    (let [server (server (mem-log) 1 5000 nil)
+          client (client (vector {:id 1 :host "localhost" :port 5000}))]
+
+      )
     (is (= 0 1))))
