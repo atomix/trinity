@@ -1,9 +1,10 @@
 (ns figaro.core
     "A sweet Clojure API for Copycat"
   (:import (net.kuujo.copycat Copycat CopycatClient CopycatServer)
-           (net.kuujo.copycat.cluster NettyMembers NettyMember NettyCluster)
-           (net.kuujo.copycat.raft.log Log StorageLevel)
-           (net.kuujo.copycat.atomic AsyncReference)))
+           (net.kuujo.copycat.raft Members Member)
+           (net.kuujo.copycat.io.transport NettyTransport)
+           (net.kuujo.copycat.io.storage Log StorageLevel)
+           (net.kuujo.copycat.atomic DistributedAtomicValue)))
 
 (defn mem-log
   "Creates an in memory log."
@@ -16,16 +17,18 @@
   "Returns a CopycatClient for the given nodes. Nodes should be a seq of maps containing :id, :host and :port values."
   ^CopycatClient
   [nodes]
-  (let [cluster-members (map #(-> (NettyMember/builder)
+  (let [cluster-members (map #(-> (Member/builder)
                                   (.withId (:id %))
                                   (.withHost (:host %))
                                   (.withPort (:port %))
                                   .build)
                              nodes)
-        cluster (-> (NettyMembers/builder)
+        cluster (-> (Members/builder)
                     (.withMembers cluster-members)
                     (.build))
+        transport (.build (NettyTransport/builder))
         client (-> (CopycatClient/builder)
+                   (.withTransport transport)
                    (.withMembers cluster)
                    (.build)
                    (.open)
@@ -37,25 +40,27 @@
   containing :id, :host and :port values."
   ^CopycatServer
   [log id port remote-nodes]
-  (let [local-member (-> (NettyMember/builder)
+  (let [local-member (-> (Member/builder)
                          (.withId id)
                          (.withHost (-> (java.net.InetAddress/getLocalHost)
                                         (.getHostName)))
                          (.withPort port)
                          .build)
-        remote-members (map #(-> (NettyMember/builder)
+        remote-members (map #(-> (Member/builder)
                                  (.withId (:id %))
                                  (.withHost (:host %))
                                  (.withPort (:port %))
                                  .build)
                             remote-nodes)
-        cluster-members (conj remote-members local-member)
-        cluster (-> (NettyCluster/builder)
-                    (.withMemberId id)
-                    (.withMembers cluster-members)
+        all-members (conj remote-members local-member)
+        members (-> (Members/builder)
+                    (.withMembers all-members)
                     (.build))
+        transport (.build (NettyTransport/builder))
         server (-> (CopycatServer/builder)
-                   (.withCluster cluster)
+                   (.withTransport transport)
+                   (.withMemberId id)
+                   (.withMembers members)
                    (.withLog log)
                    (.build)
                    (.open)
@@ -71,23 +76,23 @@
   "Creates a distributed atom for the client on the given path."
   [client path]
   (-> client
-      (.create path AsyncReference)
+      (.create path DistributedAtomicValue)
       (.get)))
 
 (defn get!
   "Gets a value from an atom."
-  [^AsyncReference atom]
+  [^DistributedAtomicValue atom]
   (-> (.get atom)
       (.get)))
 
 (defn set!
   "Sets a value for an atom."
-  [^AsyncReference atom value]
+  [^DistributedAtomicValue atom value]
   (-> (.set atom value)
       (.get)))
 
 (defn cas!
   "Compares and sets a value for an atom."
-  [^AsyncReference atom expected updated]
+  [^DistributedAtomicValue atom expected updated]
   (-> (.compareAndSet atom expected updated)
       (.get)))
