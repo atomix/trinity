@@ -35,7 +35,7 @@ Create a distributed atom on a path:
 Operate on the atom:
 
 ```clojure
-(figaro/get! atom)
+(figaro/get atom)
 (figaro/set! atom "value")
 (figaro/cas! atom "expected" "updated")
 ```

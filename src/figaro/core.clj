@@ -67,7 +67,7 @@
                    (.get))]
     server))
 
-(defn close
+(defn close!
   "Closes the Copycat client or server."
   [^Copycat copycat]
   (.close copycat))
@@ -79,7 +79,7 @@
       (.create path DistributedAtomicValue)
       (.get)))
 
-(defn get!
+(defn get
   "Gets a value from an atom."
   [^DistributedAtomicValue atom]
   (-> (.get atom)
