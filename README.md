@@ -40,6 +40,10 @@ Operate on the atom:
 (figaro/cas! atom "expected" "updated")
 ```
 
+## Docs
+
+API docs are available [here](http://jhalterman.github.com/figaro/docs/).
+
 ## License
 
 Copyright © 2015 Jonathan Halterman

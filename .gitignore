@@ -4,3 +4,4 @@
 .nrepl-port
 target/
 .lein*
+pom.xml

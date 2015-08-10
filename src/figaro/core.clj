@@ -7,14 +7,15 @@
            (net.kuujo.copycat.atomic DistributedAtomicValue)))
 
 (defn mem-log
-  "Creates an in memory log."
+  "Returns an in memory log."
   []
   (-> (Log/builder)
       (.withStorageLevel StorageLevel/MEMORY)
       (.build)))
 
 (defn client
-  "Returns a CopycatClient for the given nodes. Nodes should be a seq of maps containing :id, :host and :port values."
+  "Returns a CopycatClient for the `nodes`. `nodes` should be a `seq` of `map`s containing `:id`, `:host` and `:port`
+   values."
   ^CopycatClient
   [nodes]
   (let [cluster-members (map #(-> (Member/builder)
@@ -36,8 +37,8 @@
     client))
 
 (defn server
-  "Returns a CopycatServer for the given server id, port and remote-nodes. Remote nodes should be a seq of maps
-  containing :id, :host and :port values."
+  "Returns a `CopycatServer` for the server `id`, `port` and `remote-nodes`. `remote-nodes` should be a `seq` of `map`s
+  containing `:id`, `:host` and `:port` values."
   ^CopycatServer
   [log id port remote-nodes]
   (let [local-member (-> (Member/builder)
@@ -68,31 +69,31 @@
     server))
 
 (defn close!
-  "Closes the Copycat client or server."
+  "Closes the `copycat` client or server."
   [^Copycat copycat]
   (.close copycat))
 
 (defn dist-atom
-  "Creates a distributed atom for the client on the given path."
+  "Creates a distributed atom for the `client` on the `path`."
   [client path]
   (-> client
       (.create path DistributedAtomicValue)
       (.get)))
 
 (defn get
-  "Gets a value from an atom."
+  "Gets a value from the `atom`."
   [^DistributedAtomicValue atom]
   (-> (.get atom)
       (.get)))
 
 (defn set!
-  "Sets a value for an atom."
+  "Sets the `value` for the `atom`."
   [^DistributedAtomicValue atom value]
   (-> (.set atom value)
       (.get)))
 
 (defn cas!
-  "Compares and sets a value for an atom."
+  "Atomically compares and sets the `updated` value when the `expected` value matches the current value of the `atom`."
   [^DistributedAtomicValue atom expected updated]
   (-> (.compareAndSet atom expected updated)
       (.get)))
