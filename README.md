@@ -12,7 +12,7 @@ Create a Copycat server specifying the log, local node id, port and a set of rem
 
 ```clojure
 (figaro/server 
-  (figaro/mem-log) 1 5555 
+  1 5555 
   [{:id 2 :host node2 :port 5555}
    {:id 3 :host node3 :port 5555}])
 ```
