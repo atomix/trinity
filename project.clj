@@ -8,7 +8,7 @@
                  [io.atomix/atomix-atomic "0.1.0-SNAPSHOT"]
                  [io.atomix/atomix-collections "0.1.0-SNAPSHOT"]
                  [io.atomix/atomix-coordination "0.1.0-SNAPSHOT"]
-                 [io.atomix.catalyst/catalyst-netty "1.0.0-SNAPSHOT"]]
+                 [io.atomix/catalyst-netty "1.0.0-SNAPSHOT"]]
   :repositories [["sonatype-nexus-snapshots" {:url "https://oss.sonatype.org/content/repositories/snapshots"}]]
   :plugins [[codox "0.8.13"]]
   :codox {:output-dir "target/docs/docs"
