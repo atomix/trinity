@@ -1,4 +1,4 @@
-(defproject trinity "0.1.0-SNAPSHOT"
+(defproject io.atomix/trinity "0.1.0-SNAPSHOT"
   :description "A sweet little Clojure API for Atomix"
   :url "http://github.com/atomix/trinity"
   :license {:name "Eclipse Public License"
