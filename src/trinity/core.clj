@@ -54,7 +54,8 @@
 (defn close!
   "Closes the `atomix` client or server."
   [^Atomix atomix]
-  (.close atomix))
+  (-> (.close atomix)
+      (.get)))
 
 (defn dist-atom
   "Creates a distributed atom for the `client` on the `path`."
