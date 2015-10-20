@@ -2,6 +2,14 @@
 
 A sweet Clojure API for [Atomix][atomix].
 
+## Setup
+
+Add the Leiningen dependency:
+
+```clojure
+[io.atomix/trinity "0.1.0-SNAPSHOT"]
+```
+
 ## Usage
 
 ```clojure
