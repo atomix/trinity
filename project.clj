@@ -10,8 +10,7 @@
                  [io.atomix/atomix-coordination "0.1.0-SNAPSHOT"]
                  [io.atomix.catalyst/catalyst-netty "1.0.0-SNAPSHOT"]]
   :repositories [["sonatype-nexus-snapshots" {:url "https://oss.sonatype.org/content/repositories/snapshots"}]]
-  :plugins [[codox "0.8.13"]]
-  :codox {:output-dir "target/docs/docs"
-          :defaults {:doc/format :markdown}
-          :src-dir-uri "http://github.com/atomix/trinity/blob/master/"
-          :src-linenum-anchor-prefix "L"})
+  :plugins [[lein-codox "0.9.0"]]
+  :codox {:output-path "target/docs/docs"
+          :metadata {:doc/format :markdown}
+          :source-uri "http://github.com/atomix/trinity/blob/master/{filepath}#L{line}"})
