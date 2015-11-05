@@ -1,6 +1,6 @@
 # trinity
 
-A sweet Clojure API for [Atomix][atomix].
+A sweet Clojure API for [Atomix].
 
 ## Setup
 
@@ -10,22 +10,22 @@ Add the Leiningen dependency:
 [io.atomix/trinity "0.1.0-SNAPSHOT"]
 ```
 
-## Usage
+## Core Usage
 
 ```clojure
 (require '[trinity.core :as trinity])
 ```
 
-Create a Copycat server specifying the log, local node id, port and a set of remote nodes:
+Create an Atomix replica specifying local port to listen on and a set of remote servers that the replica should connect to:
 
 ```clojure
-(trinity/server 
+(trinity/replica 
   5555 
   [{:host node2 :port 5555}
    {:host node3 :port 5555}])
 ```
 
-Create a Copycat client connection to a set of servers by specifying a set of node information:
+Create an Atomix client for a set of servers:
 
 ```clojure
 (trinity/client
@@ -34,18 +34,40 @@ Create a Copycat client connection to a set of servers by specifying a set of no
    {:host node3 :port 5555}])
 ```
 
-Create a distributed atom on a path:
+Open an Atomix client or replica:
 
-```clojure
-(trinity/dist-atom client "register")
+```
+(trinity/open! atomix)
 ```
 
-Operate on the atom:
+Close an Atomix client or replica:
+
+```
+(trinity/close! atomix)
+```
+
+Note: Trinity functions operate sychronously by default, but many functions have async counterparts such as `open-async!` which return [CompletableFuture].
+
+## Using Atomix Resources
+
+#### Distributed Value
 
 ```clojure
-(trinity/get atom)
-(trinity/set! atom "value")
-(trinity/cas! atom "expected" "updated")
+(require '[trinity.distributed-value :as dvalue])
+```
+
+Create a distributed value on a path:
+
+```clojure
+(dvalue/create client "register")
+```
+
+Operate on the value:
+
+```clojure
+(dvalue/get value)
+(dvalue/set! value "value")
+(dvalue/cas! value "expected" "updated")
 ```
 
 ## Docs
@@ -58,4 +80,5 @@ Copyright © 2015 Jonathan Halterman
 
 Distributed under the Eclipse Public License either version 1.0
 
-[atomix]: https://github.com/atomix/atomix
+[Atomix]: http://atomix.io/atomix
+[CompletableFuture]: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html

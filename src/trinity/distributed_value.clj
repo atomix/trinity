@@ -4,11 +4,11 @@
            (io.atomix Atomix)
            (java.util.concurrent CompletableFuture)))
 
-(defn dist-value
-  "Creates a distributed atom for the `client` on the `path`."
-  [^Atomix atomix path]
+(defn create
+  "Creates a distributed value for the `atomix` instance on the resource `key`."
+  [^Atomix atomix key]
   (-> atomix
-      (.create path DistributedAtomicValue)
+      (.create key DistributedAtomicValue)
       (.get)))
 
 (defn get
