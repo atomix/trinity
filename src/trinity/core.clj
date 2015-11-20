@@ -8,13 +8,16 @@
            (java.util.concurrent CompletableFuture)))
 
 (defn disk-storage
-  "Returns a `io.atomix.copycat.server.storage.Storage` instance with map of `config` containing:
+  "Returns a `io.atomix.copycat.server.storage.Storage` instance for the `config`.
 
-  * `:path` - The path to store logs in."
-  [config]
-  (-> (Storage/builder)
-      (.withDirectory (str (get config :path (str (System/getProperty "user.dir") "/logs/" (UUID/randomUUID)))))
-      (.build)))
+  * `config` (Optional) should be a `map` containing:
+      * `:path` - The path to store logs in. Defaults to `[user.dir]/logs/`"
+  ([]
+   (disk-storage (empty {})))
+  ([config]
+   (-> (Storage/builder)
+       (.withDirectory (str (get config :path (str (System/getProperty "user.dir") "/logs/" (UUID/randomUUID)))))
+       (.build))))
 
 (defn mem-storage []
   (Storage. StorageLevel/MEMORY))
@@ -24,7 +27,7 @@
 
   * `nodes` should be a `seq` of `map`s containing `:host` and `:port` values.
   * `config` should be a `map` containing:
-      * `:transport` - The `io.atomix.catalyst.transport.Transport` instance for the client to use."
+      * `:transport` - The `io.atomix.catalyst.transport.Transport` instance for the client to use. Defaults to `NettyTransport`."
   ^AtomixClient
   ([nodes]
    (client nodes (empty {})))
@@ -45,7 +48,7 @@
   * `remote-nodes` should be a `seq` of `map`s containing `:host` and `:port` values.
   * `config` should be a `map` containing:
       * `:storage` - The `io.atomix.copycat.server.storage.Storage` instance for the replica to use.
-      * `:transport` - The `io.atomix.catalyst.transport.Transport` instance for the replica to use."
+      * `:transport` - The `io.atomix.catalyst.transport.Transport` instance for the client to use. Defaults to `NettyTransport`."
   ^AtomixReplica
   ([port remote-nodes]
    (replica port remote-nodes (empty {})))

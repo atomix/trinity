@@ -6,9 +6,7 @@ A sweet Clojure API for [Atomix].
 
 Add the Leiningen dependency:
 
-```clojure
-[io.atomix/trinity "0.1.0-SNAPSHOT"]
-```
+[![Clojars Project](http://clojars.org/io.atomix/trinity/latest-version.svg)](http://clojars.org/io.atomix/trinity)
 
 ## Core Usage
 

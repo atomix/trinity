@@ -30,7 +30,7 @@
       (.get)))
 
 (defn set-async!
-  "Sets the `value` asynchronously for the `dvalue`."
+  "Sets the `value` asynchronously for the `dvalue`, returning a `CompletableFuture`."
   ^CompletableFuture
   [^DistributedAtomicValue dvalue value]
   (.set dvalue value))
@@ -42,7 +42,8 @@
       (.get)))
 
 (defn cas-async!
-  "Compares and sets the `updated` value asynchronously when the `expected` value matches the current value of the `dvalue`."
+  "Compares and sets the `updated` value asynchronously when the `expected` value matches the current value of the
+  `dvalue`, returning a `CompletableFuture`."
   ^CompletableFuture
   [^DistributedAtomicValue dvalue expected updated]
   (.compareAndSet dvalue expected updated))
