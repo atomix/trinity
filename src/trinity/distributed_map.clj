@@ -1,4 +1,4 @@
-(ns trinity.distributed-value
+(ns trinity.distributed-map
   "Functions for operating on Atomix DistributedMaps."
   (:import (io.atomix.collections DistributedMap)
            (io.atomix Atomix)
