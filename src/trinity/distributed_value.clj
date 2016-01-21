@@ -4,13 +4,6 @@
            (io.atomix Atomix)
            (java.util.concurrent CompletableFuture)))
 
-(defn create
-  "Creates a distributed value for the `atomix` instance on the resource `key`."
-  [^Atomix atomix key]
-  (-> atomix
-      (.create key DistributedValue)
-      (.get)))
-
 (defn get
   "Gets a value from the `dvalue`."
   [^DistributedValue dvalue]

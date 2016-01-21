@@ -50,22 +50,40 @@ Note: Trinity functions operate sychronously by default, but many functions have
 
 #### Distributed Value
 
-```clojure
-(require '[trinity.distributed-value :as dvalue])
-```
-
-Create a distributed value on a path:
+Get a distributed value for some resource name:
 
 ```clojure
-(dvalue/create client "register")
+(def register 
+  (trinity/get-value client "register"))
 ```
 
 Operate on the value:
 
 ```clojure
-(dvalue/get value)
-(dvalue/set! value "value")
-(dvalue/cas! value "expected" "updated")
+(require '[trinity.distributed-value :as dvalue])
+
+(dvalue/get register)
+(dvalue/set! register "value")
+(dvalue/cas! register "expected" "updated")
+```
+
+#### Distributed Map
+
+Get a distributed map for some resource name:
+
+```clojure
+(def cache 
+  (trinity/get-map client "cache"))
+```
+
+Operate on the map:
+
+```clojure
+(require '[trinity.distributed-map :as dmap])
+
+(dmap/get cache "key")
+(dvalue/put! cache "key" "value")
+(dvalue/remove! cache "key")
 ```
 
 ## Docs

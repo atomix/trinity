@@ -5,7 +5,9 @@
            (io.atomix.copycat.server.storage Storage StorageLevel)
            (java.util Collection UUID)
            (java.net InetAddress)
-           (java.util.concurrent CompletableFuture)))
+           (java.util.concurrent CompletableFuture)
+           (io.atomix.collections DistributedMap)
+           (io.atomix.variables DistributedValue)))
 
 (defn disk-storage
   "Returns a `io.atomix.copycat.server.storage.Storage` instance for the `config`.
@@ -45,47 +47,77 @@
   "Returns an `io.atomix.AtomixReplica` for the `port` and `remote-nodes`.
 
   * `port` should be the localhost port for the replica to listen on.
-  * `remote-nodes` should be a `seq` of `map`s containing `:host` and `:port` values.
+  * `nodes` should be a `seq` of `map`s containing `:host` and `:port` values.
   * `config` should be a `map` containing:
       * `:storage` - The `io.atomix.copycat.server.storage.Storage` instance for the replica to use.
       * `:transport` - The `io.atomix.catalyst.transport.Transport` instance for the client to use. Defaults to `NettyTransport`."
   ^AtomixReplica
-  ([port remote-nodes]
-   (replica port remote-nodes (empty {})))
-  ([port remote-nodes config]
+  ([port nodes]
+   (replica port nodes (empty {})))
+  ([port nodes config]
    (let [localhost (-> (InetAddress/getLocalHost)
                        (.getHostName))
          local-address (Address. localhost port)
-         ^Collection remote-addresses (map #(Address. (:host %) (:port %))
-                                           remote-nodes)
+         ^Collection addresses (map #(Address. (:host %) (:port %))
+                                           nodes)
          storage (get config :storage (Storage.))
          transport (get config :transport (NettyTransport.))
-         replica (-> (AtomixReplica/builder local-address remote-addresses)
+         replica (-> (AtomixReplica/builder local-address addresses)
                      (.withTransport transport)
                      (.withStorage storage)
                      (.build))]
      replica)))
 
 (defn open!
-  "Opens the `atomix` client, server or replica."
+  "Opens the `atomix` client or replica."
   [^Atomix atomix]
   (-> (.open atomix)
       (.get)))
 
 (defn open-async!
-  "Asynchronously opens the `atomix` , server or replica."
+  "Asynchronously opens the `atomix` client or replica."
   ^CompletableFuture
   [^Atomix atomix]
   (.open atomix))
 
 (defn close!
-  "Asynchronously closes the `atomix` , server or replica."
+  "Closes the `atomix` client or replica."
   [^Atomix atomix]
   (-> (.close atomix)
       (.get)))
 
 (defn close-async!
-  "Closes the `atomix` , server or replica."
+  "Asynchronously closes the `atomix` client or replica."
   ^CompletableFuture
   [^Atomix atomix]
   (.close atomix))
+
+(defn get-value
+  "Gets a distributed value for the `atomix` instance on the resource `key`."
+  ^DistributedValue
+  [^Atomix atomix key]
+  (-> atomix
+      (.getValue key)
+      (.get)))
+
+(defn get-value-async
+  "Asynchronously gets a distributed value for the `atomix` instance on the resource `key`."
+  ^CompletableFuture
+  [^Atomix atomix key]
+  (-> atomix
+      (.getValue key)))
+
+(defn get-map
+  "Gets a distributed map for the `atomix` instance on the resource `key`."
+  ^DistributedMap
+  [^Atomix atomix key]
+  (-> atomix
+      (.getMap key)
+      (.get)))
+
+(defn get-map-async
+  "Asynchronously gets a distributed map for the `atomix` instance on the resource `key`."
+  ^CompletableFuture
+  [^Atomix atomix key]
+  (-> atomix
+      (.getMap key)))

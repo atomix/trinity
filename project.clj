@@ -4,10 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [io.atomix/atomix "0.1.0-SNAPSHOT"]
-                 [io.atomix/atomix-variables "0.1.0-SNAPSHOT"]
-                 [io.atomix/atomix-collections "0.1.0-SNAPSHOT"]
-                 [io.atomix/atomix-coordination "0.1.0-SNAPSHOT"]
+                 [io.atomix/atomix-all "0.1.0-SNAPSHOT"]
                  [io.atomix.catalyst/catalyst-netty "1.0.0-SNAPSHOT"]]
   :repositories [["sonatype-nexus-snapshots" {:url "https://oss.sonatype.org/content/repositories/snapshots"}]]
   :plugins [[lein-codox "0.9.0"]]
