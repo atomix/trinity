@@ -1,7 +1,6 @@
 (ns trinity.distributed-map
   "Functions for operating on Atomix DistributedMaps."
   (:import (io.atomix.collections DistributedMap)
-           (io.atomix Atomix)
            (java.util.concurrent CompletableFuture)))
 
 (defn get

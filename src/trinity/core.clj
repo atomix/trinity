@@ -24,31 +24,35 @@
 (defn mem-storage []
   (Storage. StorageLevel/MEMORY))
 
+(defn- addresses-for-nodes
+  "Returns Collection of Addresses for the given nodes.
+
+  * `nodes` - A `seq` of `map`s containing `:host` and `:port` values."
+  ^Collection
+  [nodes]
+  (map #(Address. (:host %) (:port %))
+       nodes))
+
 (defn client
   "Returns an `io.atomix.AtomixClient` for the `nodes` and `config`.
 
-  * `nodes` should be a `seq` of `map`s containing `:host` and `:port` values.
-  * `config` should be a `map` containing:
+  * `config` - A `map` containing:
       * `:transport` - The `io.atomix.catalyst.transport.Transport` instance for the client to use. Defaults to `NettyTransport`."
   ^AtomixClient
-  ([nodes]
-   (client nodes (empty {})))
-  ([nodes config]
-   (let [^Collection cluster-members (map #(-> (Address. (:host %)
-                                                         (:port %)))
-                                          nodes)
-         transport (get config :transport (NettyTransport.))
-         client (-> (AtomixClient/builder cluster-members)
+  ([]
+   (client (empty {})))
+  ([config]
+   (let [transport (get config :transport (NettyTransport.))
+         client (-> (AtomixClient/builder)
                     (.withTransport transport)
                     (.build))]
      client)))
 
 (defn replica
-  "Returns an `io.atomix.AtomixReplica` for the `port` and `remote-nodes`.
+  "Returns an `AtomixReplica` for the `port` and `config`.
 
-  * `port` should be the localhost port for the replica to listen on.
-  * `nodes` should be a `seq` of `map`s containing `:host` and `:port` values.
-  * `config` should be a `map` containing:
+  * `port` - The localhost port for the replica to listen on.
+  * `config` - A `map` containing:
       * `:storage` - The `io.atomix.copycat.server.storage.Storage` instance for the replica to use.
       * `:transport` - The `io.atomix.catalyst.transport.Transport` instance for the client to use. Defaults to `NettyTransport`."
   ^AtomixReplica
@@ -58,39 +62,74 @@
    (let [localhost (-> (InetAddress/getLocalHost)
                        (.getHostName))
          local-address (Address. localhost port)
-         ^Collection addresses (map #(Address. (:host %) (:port %))
-                                           nodes)
          storage (get config :storage (Storage.))
          transport (get config :transport (NettyTransport.))
-         replica (-> (AtomixReplica/builder local-address addresses)
+         replica (-> (AtomixReplica/builder local-address)
                      (.withTransport transport)
                      (.withStorage storage)
                      (.build))]
      replica)))
 
-(defn open!
-  "Opens the `atomix` client or replica."
-  [^Atomix atomix]
-  (-> (.open atomix)
+(defn connect!
+  "Connects the client to a cluster.
+
+  * `client` - The client to connect to the cluster.
+  * `nodes` - A `seq` of `map`s containing `:host` and `:port` values."
+  [^AtomixClient client nodes]
+  (-> (.connect client (addresses-for-nodes nodes))))
+
+(defn bootstrap-async!
+  "Asynchronously bootstraps the `replica`.
+
+  `nodes` - The nodes to bootstrap the replica into. A `seq` of `map`s containing `:host` and `:port` values.
+  If not given, the replica is bootstrapped as a single node cluster."
+  ^CompletableFuture
+  ([^AtomixReplica replica]
+   (.bootstrap replica))
+  ([^AtomixReplica replica nodes]
+    (.bootstrap replica (addresses-for-nodes nodes))))
+
+(defn bootstrap
+  "Bootstraps the `replica`.
+
+  `nodes` - The nodes to bootstrap the replica into. A `seq` of `map`s containing `:host` and `:port` values.
+  If not given, the replica is bootstrapped as a single node cluster."
+  ([^AtomixReplica replica]
+   (-> (bootstrap-async! replica)
+       (.get)))
+  ([^AtomixReplica replica nodes]
+   (-> (bootstrap-async! replica nodes)
+       (.get))))
+
+(defn join
+  "Joins the `replica` to an existing cluster.
+
+  * replica The replica to join to a cluster
+  * `nodes` - A `seq` of `map`s containing `:host` and `:port` values indicating the nodes to join."
+  [^AtomixReplica replica nodes]
+  (-> (.bootstrap replica)
       (.get)))
 
-(defn open-async!
-  "Asynchronously opens the `atomix` client or replica."
+(defn join-async!
+  "Asynchronously joins the `replica` to an existing cluster.
+
+  * `replica` - The replica to join to a cluster
+  * `nodes` - A `seq` of `map`s containing `:host` and `:port` values indicating the nodes to join."
   ^CompletableFuture
-  [^Atomix atomix]
-  (.open atomix))
+  [^AtomixReplica replica nodes]
+  (bootstrap replica))
 
 (defn close!
-  "Closes the `atomix` client or replica."
-  [^Atomix atomix]
-  (-> (.close atomix)
+  "Closes the `client`."
+  [^AtomixClient client]
+  (-> (.close client)
       (.get)))
 
 (defn close-async!
-  "Asynchronously closes the `atomix` client or replica."
+  "Asynchronously closes the `client`."
   ^CompletableFuture
-  [^Atomix atomix]
-  (.close atomix))
+  [^AtomixClient client]
+  (.close client))
 
 (defn get-value
   "Gets a distributed value for the `atomix` instance on the resource `key`."

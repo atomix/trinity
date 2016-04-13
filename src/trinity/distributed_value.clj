@@ -1,7 +1,6 @@
 (ns trinity.distributed-value
   "Functions for operating on Atomix DistributedValues."
   (:import (io.atomix.variables DistributedValue)
-           (io.atomix Atomix)
            (java.util.concurrent CompletableFuture)))
 
 (defn get
