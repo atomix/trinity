@@ -8,6 +8,6 @@
                  [io.atomix.catalyst/catalyst-netty "1.0.7"]]
   :repositories [["sonatype-nexus-snapshots" {:url "https://oss.sonatype.org/content/repositories/snapshots"}]]
   :plugins [[lein-codox "0.9.0"]]
-  :codox {:output-path "target/docs/docs"
+  :codox {:output-path "target/docs/api"
           :metadata {:doc/format :markdown}
           :source-uri "http://github.com/atomix/trinity/blob/master/{filepath}#L{line}"})
