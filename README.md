@@ -1,12 +1,9 @@
 # trinity
 
+[![Clojars](https://img.shields.io/clojars/v/io.atomix/trinity.svg?maxAge=2592000)](https://clojars.org/io.atomix/trinity)
+[![license](https://img.shields.io/github/license/atomix/trinity.svg)](https://raw.githubusercontent.com/atomix/trinity/master/LICENSE)
+
 A sweet Clojure API for [Atomix].
-
-## Setup
-
-Add the Leiningen dependency:
-
-[![Clojars Project](http://clojars.org/io.atomix/trinity/latest-version.svg)](http://clojars.org/io.atomix/trinity)
 
 ## Core Usage
 
@@ -92,7 +89,7 @@ API docs are available [here](http://atomix.io/trinity/docs/).
 
 ## License
 
-Copyright © 2015 Jonathan Halterman
+Copyright © 2015-2016 Atomix contributors
 
 Distributed under the Eclipse Public License either version 1.0
 
