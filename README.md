@@ -8,7 +8,7 @@ A sweet Clojure API for [Atomix].
 ## Core Usage
 
 ```clojure
-(require '[trinity.core :as trinity])
+(require [trinity.core :as trinity])
 ```
 
 Create an Atomix replica specifying local port to listen on and a set of remote servers that the replica should connect to:
