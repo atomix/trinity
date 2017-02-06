@@ -1,7 +1,8 @@
 (ns trinity.core
   "Functions for operating on Atomix clients, servers and replicas."
   (:import (io.atomix Atomix AtomixClient AtomixReplica)
-           (io.atomix.catalyst.transport Address NettyTransport)
+           (io.atomix.catalyst.transport Address)
+           (io.atomix.catalyst.transport.netty NettyTransport)
            (io.atomix.copycat.server.storage Storage StorageLevel)
            (java.util Collection UUID)
            (java.net InetAddress)
