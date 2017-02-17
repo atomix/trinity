@@ -85,7 +85,7 @@ Operate on the map:
 
 ## Docs
 
-API docs are available [here](http://atomix.io/trinity/docs/).
+API docs are available [here](http://atomix.io/trinity/api/).
 
 ## License
 
